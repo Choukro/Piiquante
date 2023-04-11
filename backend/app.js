@@ -1,15 +1,15 @@
-// import du module "cors" afin d'accepter les requêtes provenant de sources différentes 
+// module "cors" afin d'accepter les requêtes provenant de sources différentes 
 const cors = require('cors');
-// import du module "mongoose" pour la base de données
+// module "mongoose" pour la base de données
 const mongoose = require('mongoose');
-// import du package "express" (Framework node js)
+// Package "express"
 const express = require('express');
-// import du module "dotenv" pour utiliser les variables d'environnement (ici cacher l'ID et le MDP de la base de données)
+// module "dotenv" pour utiliser les variables d'environnement
 const dotenv = require('dotenv');
 dotenv.config();
-const MONGODB_URI = process.env.MONGODB_URI; // //import de la variabe d'environnement pour la connexion à la base da données
-
-mongoose.connect(MONGODB_URI,
+const mongoDB_URI = process.env.mongoDB_URI; // Variabe d'environnement pour la connexion à la base de données MongoDB
+// connexion à la base de données grâce à la variable d'environnement 
+mongoose.connect(mongoDB_URI,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
