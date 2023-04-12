@@ -1,4 +1,4 @@
-// Module "mongoose" pour l'accès à la base de données
+// Module "mongoose" pour l'accès à la MongoDB
 const mongoose = require('mongoose');
 
 //Plugin "mongoose error" pour la gestion des erreurs 

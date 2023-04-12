@@ -1,4 +1,4 @@
-// Module "cors" afin d'accepter les requêtes provenant de sources différentes 
+// Module "cors" afin d'accepter les requêtes provenant de différentes sources 
 const cors = require('cors');
 
 // Module "mongoose" pour la base de données
@@ -6,9 +6,6 @@ const mongoose = require('mongoose');
 
 // Module "express"
 const express = require('express');
-
-// Définition de userRoutes
-const userRoutes = require('./routes/user');
 
 // Module "dotenv" pour utiliser les variables d'environnement
 const dotenv = require('dotenv');
@@ -23,6 +20,10 @@ mongoose.connect(mongoDB_URI,
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 const app = express();
+const userRoutes = require('./routes/user');
+const gravyRoutes = require('./routes/sauce');
+
+
 
 // Middleware
 app.use(cors());
@@ -30,6 +31,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', userRoutes);
+app.use('/api/sauces', gravyRoutes);
 
 
 module.exports = app;
