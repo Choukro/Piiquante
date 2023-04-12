@@ -1,15 +1,22 @@
-// module "cors" afin d'accepter les requêtes provenant de sources différentes 
+// Module "cors" afin d'accepter les requêtes provenant de sources différentes 
 const cors = require('cors');
-// module "mongoose" pour la base de données
+
+// Module "mongoose" pour la base de données
 const mongoose = require('mongoose');
-// Package "express"
+
+// Module "express"
 const express = require('express');
-// module "dotenv" pour utiliser les variables d'environnement
+
+// Définition de userRoutes
+const userRoutes = require('./routes/user');
+
+// Module "dotenv" pour utiliser les variables d'environnement
 const dotenv = require('dotenv');
 dotenv.config();
 const mongoDB_URI = process.env.mongoDB_URI; // Variabe d'environnement pour la connexion à la base de données MongoDB
-// connexion à la base de données grâce à la variable d'environnement 
-mongoose.connect(mongoDB_URI,
+
+// Connexion à la MongoDB grâce à la variable d'environnement 
+mongoose.connect(mongoDB_URI, 
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -17,11 +24,12 @@ mongoose.connect(mongoDB_URI,
 
 const app = express();
 
-app.get('/',(req,res) => {
-    res.send('Hello World, ça va !')
-})
-
-app.use(express.json());
+// Middleware
 app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api/auth', userRoutes);
+
 
 module.exports = app;
