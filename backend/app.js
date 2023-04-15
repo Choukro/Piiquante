@@ -7,6 +7,9 @@ const mongoose = require('mongoose');
 // Module "express"
 const express = require('express');
 
+// Module "morgan" pour retranscrire les informations des requêtes dans le terminal
+const morgan = require('morgan');
+
 // Module "dotenv" pour utiliser les variables d'environnement
 const dotenv = require('dotenv');
 dotenv.config();
@@ -20,18 +23,19 @@ mongoose.connect(mongoDB_URI,
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 const app = express();
-const userRoutes = require('./routes/user');
-const gravyRoutes = require('./routes/sauce');
-
+const userRoutes = require('./routes/user.routes');
+const sauceRoutes = require('./routes/sauce.routes');
 
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
+
 
 // Routes
 app.use('/api/auth', userRoutes);
-app.use('/api/sauces', gravyRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 
 module.exports = app;

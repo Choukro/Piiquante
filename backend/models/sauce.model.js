@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const MongooseErrors = require('mongoose-errors');
 
 // Schéma "sauce"
-const gravySchema = mongoose.Schema({
+const sauceSchema = mongoose.Schema({
 
   userId: { type: String, required: true },
   name: { type: String, required: true },
@@ -21,6 +21,6 @@ const gravySchema = mongoose.Schema({
   
 });
 
-gravySchema.plugin(MongooseErrors);
+sauceSchema.plugin(MongooseErrors);
 
-module.exports = mongoose.model("Gravy", gravySchema);
+module.exports = mongoose.model("Sauce", sauceSchema);

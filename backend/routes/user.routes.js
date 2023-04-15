@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 // Importation du controller "user"
-const userCtrl = require('../controllers/user');
+const userCtrl = require('../controllers/user.controller');
 
 // Route création d'un nouvel utilisateur
 router.post('/signup', userCtrl.signup);

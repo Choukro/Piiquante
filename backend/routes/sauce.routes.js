@@ -8,9 +8,9 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 
 // Importataion du controller "sauce"
-const sauceCtrl = require('../controllers/sauce');
+const sauceCtrl = require('../controllers/sauce.controller');
 
 // Route de toutes les sauces
-router.get('/', auth, sauceCtrl.getAllGravies);
+router.get('/', auth, sauceCtrl.getAllSauces);
 
 module.exports = router;

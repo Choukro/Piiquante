@@ -10,13 +10,13 @@ dotenv.config();
 const TOKEN = process.env.TOKEN;
 
 // Import du modèle "User"
-const User = require('../models/User');
+const User = require('../models/user.model');
 
 // Fonction "signup"
 exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10)
         .then(hash => {
-            const user = new User({
+            const user = new User ({
                 email : req.body.email,
                 password : hash,
             });
