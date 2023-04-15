@@ -2,9 +2,10 @@
 const mongoose = require('mongoose');
 
 // Plugin "mongoose error" pour la gestion des erreurs
-const MongooseErrors = require('mongoose-errors');
+const mongooseErrors = require('mongoose-errors');
 
 // Schéma "sauce"
+// La méthode Schema de Mongoose permet de créer un schéma de données pour ma base de données MongoDB
 const sauceSchema = mongoose.Schema({
 
   userId: { type: String, required: true },
@@ -21,6 +22,6 @@ const sauceSchema = mongoose.Schema({
   
 });
 
-sauceSchema.plugin(MongooseErrors);
+sauceSchema.plugin(mongooseErrors);
 
-module.exports = mongoose.model("Sauce", sauceSchema);
+module.exports = mongoose.model("Sauce", sauceSchema); //La méthode model transforme ce modèle en un modèle utilisable

@@ -14,7 +14,7 @@ const User = require('../models/user.model');
 
 // Fonction "signup"
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
+    bcrypt.hash(req.body.password, 10) // méthode hash() de bcrypt afin de créer un hash crypté des mots de passe des utilisateurs pour les enregistrer de manière sécurisée dans la base de données
         .then(hash => {
             const user = new User ({
                 email : req.body.email,
@@ -35,14 +35,14 @@ exports.login = (req, res, next) => {
             if (user === null) {
                 return res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte'});
             } else {
-                bcrypt.compare(req.body.password, user.password)
+                bcrypt.compare(req.body.password, user.password) // méthode compare de bcrypt : compare un string avec un hash pour vérifier si un mot de passe entré par l'utilisateur correspond à un hash sécurisé enregistré en base de données
                 .then(valid => {
                     if (!valid) {
                         return res.status(401).json({ message: 'Paire identifiant/mot de passe incorrecte' });
                     } else {
                         res.status(200).json({
                             userId: user._id,
-                            token: jwt.sign(
+                            token: jwt.sign( // méthode sign() du package jsonwebtoken utilise une clé secrète pour chiffrer un token qui peut contenir un payload personnalisé (ID de l'utilisateur) et avoir une validité limitée
                                 { userId: user._id},
                                 TOKEN,
                                 { expiresIn: '24h' }
