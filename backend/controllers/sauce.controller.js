@@ -1,6 +1,9 @@
 // Importation du modèle "Sauce"
 const Sauce = require('../models/sauce.model');
 
+// Le package fs expose des méthodes pour interagir avec le système de fichiers du serveur
+const fs = require('fs'); 
+
 // Export du controller qui affiche toutes les sauces
 exports.getAllSauces = (req, res, next) => {
     Sauce.find()
@@ -21,5 +24,54 @@ exports.createSauce = async (req, res, next) => {
   sauce.save()
   .then(() => res.status(201).json({message: 'Sauce enregistré !'}))
   .catch(error => res.status(400).json( { error }));
+};
+
+// Export du controller pour voir une sauce
+exports.getOneSauce = (req, res, next) => {
+  Sauce.findOne({_id: req.params.id })
+    .then((sauce) => res.status(200).json(sauce))
+    .catch((error) => res.status(404).json({ error }));
+};
+
+// Export du controller pour modifier une sauce
+exports.modifySauce = (req, res, next) => {
+  const sauceObject = req.file ? {
+      ...JSON.parse(req.body.sauce),
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  } : { ...req.body };
+  delete sauceObject._userId;
+  Sauce.findOne({_id: req.params.id})
+      .then((sauce) => {
+          if (sauce.userId != req.auth.userId) {
+              res.status(401).json({ message : 'Non authorisé !'});
+          } else {
+              Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
+              .then(() => res.status(200).json({message : 'Sauce modifiée !'}))
+              .catch(error => res.status(401).json({ error }));
+          }
+      })
+      .catch((error) => {
+          res.status(400).json({ error });
+      });
+};
+
+// Export du controller pour supprimer une sauce
+exports.deleteSauce = (req, res, next) => {
+  Sauce.findOne({ _id: req.params.id})
+    .then(sauce => {
+        if (sauce.userId != req.auth.userId) {
+          res.status(401).json({message: 'Non authorisé !'});
+        } else {
+          const filename = sauce.imageUrl.split('/images/')[1];
+          fs.unlink(`images/${filename}`, () => { // La méthode unlink() du package  fs  permet de supprimer un fichier du système de fichiers
+              Sauce.deleteOne({_id: req.params.id})
+                  .then(() => { res.status(200).json({message: 'Sauce supprimée !'})})
+                  .catch(error => res.status(401).json({ error }));
+          });
+        }
+    })
+    .catch( error => {
+        res.status(500).json({ error });
+    });
 };
 

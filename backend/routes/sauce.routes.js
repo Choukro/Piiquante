@@ -20,4 +20,13 @@ router.get('/', auth, sauceCtrl.getAllSauces);
 // Route POST création d'une sauce
 router.post('/', auth, multer, sauceCtrl.createSauce);
 
+// Route GET pour récupérer une sauce
+router.get('/:id',auth, sauceCtrl.getOneSauce);
+
+// Route pour suprimer une sauce
+router.delete('/:id', auth, multer, sauceCtrl.deleteSauce);
+
+// Route pour modifier une sauce
+router.put('/:id',auth, multer, sauceCtrl.modifySauce);
+
 module.exports = router;
