@@ -22,7 +22,7 @@ exports.createSauce = async (req, res, next) => {
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` // URL de l'image : {http}://{localhost:3000}/images/{filename(voir multer.js)}
   });
   sauce.save()
-  .then(() => res.status(201).json({message: 'Sauce enregistré !'}))
+  .then(() => res.status(201).json({message: 'Registered sauce !'}))
   .catch(error => res.status(400).json( { error }));
 };
 
@@ -43,10 +43,10 @@ exports.modifySauce = (req, res, next) => {
   Sauce.findOne({_id: req.params.id})
       .then((sauce) => {
           if (sauce.userId != req.auth.userId) {
-              res.status(401).json({ message : 'Non authorisé !'});
+              res.status(403).json({ message : '403: unauthorized request'});
           } else {
               Sauce.updateOne({ _id: req.params.id}, { ...sauceObject, _id: req.params.id})
-              .then(() => res.status(200).json({message : 'Sauce modifiée !'}))
+              .then(() => res.status(200).json({message : 'Modified sauce !'}))
               .catch(error => res.status(401).json({ error }));
           }
       })
@@ -60,12 +60,12 @@ exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id})
     .then(sauce => {
         if (sauce.userId != req.auth.userId) {
-          res.status(401).json({message: 'Non authorisé !'});
+          res.status(403).json({message: '403: unauthorized request'});
         } else {
           const filename = sauce.imageUrl.split('/images/')[1];
           fs.unlink(`images/${filename}`, () => { // La méthode unlink() du package  fs  permet de supprimer un fichier du système de fichiers
               Sauce.deleteOne({_id: req.params.id})
-                  .then(() => { res.status(200).json({message: 'Sauce supprimée !'})})
+                  .then(() => { res.status(200).json({message: 'Deleted sauce !'})})
                   .catch(error => res.status(401).json({ error }));
           });
         }
@@ -75,3 +75,57 @@ exports.deleteSauce = (req, res, next) => {
     });
 };
 
+// Export du controller pour liker/disliker une sauce
+exports.likeSauce = (req, res, next) => {
+  const {like, userId} = req.body // like === 0, -1, 1
+  if (![0,-1,1].includes(like)) return res.statut(403).send({ message: 'Invalid like value'})
+
+  if (like === 1 || like === -1) {
+    Sauce.findOne({_id: req.params.id})
+      .then((sauce) => {
+        //const votersArray = like === 1 ? sauce.usersLiked : sauce.usersDisliked
+        //console.log("tableau des votes : ", votersArray)
+        //if (votersArray.includes(userId)) return res.status(401).json({ message: 'Unauthorised operation !'})
+        if (like === 1) {
+          Sauce.updateOne({ _id: req.params.id }, {
+            $push: { usersLiked: userId },
+            $inc: { likes: +1 },
+          })
+            .then(() => res.status(200).json({ message: 'Like !' }))
+            .catch((error) => res.status(400).json({ error }));
+        } else {
+          Sauce.updateOne({ _id: req.params.id }, {
+            $push: { usersDisliked: userId },
+            $inc: { dislikes: +1 },
+          })
+            .then(() => res.status(200).json({ message: 'Dislike !' }))
+            .catch((error) => res.status(400).json({ error }));
+        }
+      })
+      .catch((error) => {
+        res.status(404).json({ error });
+      });
+  } else {
+    Sauce.findOne({ _id: req.params.id })
+      .then((sauce) => {
+          if (sauce.usersLiked.includes(userId)) {
+              Sauce.updateOne({ _id: req.params.id }, {
+                  $pull: { usersLiked: userId },
+                  $inc: { likes: -1 },
+              })
+                .then(() => res.status(200).json({ message: 'Removed like !' }))
+                .catch((error) => res.status(400).json({ error }))
+          } else {
+              Sauce.updateOne({ _id: req.params.id }, {
+                $pull: { usersDisliked: userId },
+                $inc: { dislikes: -1 },
+              })
+                .then(() => res.status(200).json({ message: 'Removed dislike !' }))
+                .catch((error) => res.status(400).json({ error }))
+          };
+      })
+      .catch((error) => {
+        res.status(404).json({ error });
+      });
+  };
+};
