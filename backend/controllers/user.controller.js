@@ -8,13 +8,14 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 const TOKEN = process.env.TOKEN;
+const HASH = process.env.HASH;
 
 // Import du modèle "User"
 const User = require('../models/user.model');
 
 // Fonction "signup"
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10) // méthode hash() de bcrypt afin de créer un hash crypté des mots de passe des utilisateurs pour les enregistrer de manière sécurisée dans la base de données
+    bcrypt.hash(req.body.password, HASH) // méthode hash() de bcrypt afin de créer un hash crypté des mots de passe des utilisateurs pour les enregistrer de manière sécurisée dans la base de données
         .then(hash => {
             const user = new User ({
                 email : req.body.email,
@@ -45,7 +46,7 @@ exports.login = (req, res, next) => {
                             token: jwt.sign( // méthode sign() du package jsonwebtoken utilise une clé secrète pour chiffrer un token qui peut contenir un payload personnalisé (ID de l'utilisateur) et avoir une validité limitée
                                 { userId: user._id},
                                 TOKEN,
-                                { expiresIn: '24h' }
+                                { expiresIn: '4h' }
                             )
                         });
                     }
