@@ -1,4 +1,4 @@
-# Piiquante 🌶 : Application web de critique de sauces piquantes 
+# Piiquante 🌶 : Application web de sauces piquantes 
 
 > 🖥️ **API REST sécurisée avec Node.js et le framework Express pour une application web d'avis gastronomique !**
 
