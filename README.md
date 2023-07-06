@@ -1,6 +1,6 @@
-# Piiquante 🌶 : Application web de sauces piquantes 
+# Piiquante 🌶 : Application web sécurisée 
 
-> 🖥️ **API REST sécurisée avec Node.js et le framework Express pour une application web d'avis gastronomique !**
+> 🖥️ **API REST de notation de sauces sécurisée avec Node.js et le framework Express en utilisant une base de données MongoDB !**
 
 ![screenshot du site](./frontend/src/assets/images/screenshot/62476058.jpg)
 
